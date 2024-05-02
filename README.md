@@ -1,10 +1,10 @@
 # PDF提取三元组 
 
-* 使用语言 => (Python+Java)
+* 使用语言 => (Python+Java（×）)
 
 * 脚本语言 => (Python)
 
-* 主要的库 => (OpenIE、Stanford CoreNLP、PyPDF2)
+* 主要的库 => (OpenIE、LTP、Stanford CoreNLP（×）、PyPDF2)
 
 ***
 
@@ -43,7 +43,47 @@ with StanfordOpenIE(properties=properties) as client:
 
 ***
 
-###  Stanford CoreNLP：
+### LTP：
+
+1. 中英文通用
+2. Github：https://github.com/HIT-SCIR/ltp
+3. code-EX：
+
+```python
+import torch
+from ltp import LTP
+
+# 默认 huggingface 下载，可能需要代理
+
+ltp = LTP(r"E:\python_work\pyneo\pdfToData\myPDF\models\tiny")  # 默认加载 Small 模型
+                        # 也可以传入模型的路径，ltp = LTP("/path/to/your/model")
+                        # /path/to/your/model 应当存在 config.json 和其他模型文件
+
+# 将模型移动到 GPU 上
+if torch.cuda.is_available():
+    # ltp.cuda()
+    ltp.to("cuda")
+
+# 自定义词表
+# ltp.add_word("汤姆去", freq=2)
+# ltp.add_words(["外套", "外衣"], freq=2)
+
+#  分词 cws、词性 pos、命名实体标注 ner、语义角色标注 srl、依存句法分析 dep、语义依存分析树 sdp、语义依存分析图 sdpg
+output = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner", "srl", "dep", "sdp", "sdpg"])
+# 使用字典格式作为返回结果
+print(f"命名实体识别：{output.ner}")
+print(f"分词：{output.cws}") # 索引从0开始
+print(f"语义依存分析图：{output.sdpg}") # 索引会因为虚节点+1，里面的1就是cws的0 => 1：他，2：叫，3：汤姆
+
+# 输出
+命名实体识别：[[('Nh', '汤姆')]]
+分词：[['他', '叫', '汤姆', '去', '拿', '外衣', '。']]
+语义依存分析图：[[(1, 2, 'AGT'), (2, 0, 'Root'), (3, 2, 'DATV'), (3, 4, 'AGT'), (4, 2, 'eSUCC'), (5, 2, 'eSUCC'), (5, 4, 'eSUCC'), (6, 5, 'PAT'), (7, 2, 'mPUNC')]]
+```
+
+***
+
+###  × Stanford CoreNLP（废案）：
 
 1. 处理中文(Main)、阿拉伯语、法语等
 2. 中文教程：https://blog.csdn.net/weixin_46570668/article/details/116478666

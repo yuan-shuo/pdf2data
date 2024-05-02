@@ -8,7 +8,7 @@ properties = {
 
 with StanfordOpenIE(properties=properties) as client:
     text = 'Barack Obama was born in Hawaii. Richard Manning wrote this sentence.'
-    text = 'The CNN algorithm is mainly used to realize the recognition and feature extraction of target images'
+    # text = 'The CNN algorithm is mainly used to realize the recognition and feature extraction of target images'
     print('Text: %s.' % text)
     for triple in client.annotate(text):
         print('|-', triple)
