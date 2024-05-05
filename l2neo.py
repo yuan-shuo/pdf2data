@@ -2,10 +2,54 @@ from py2neo import Node, Graph, Relationship, NodeMatcher, Subgraph
 import torch
 from ltp import LTP, StnSplit
 
-# 连接数据库并清空所有内容（要先启动数据库不然先注释掉）
-# link = Graph("http://localhost:7474", auth=("neo4j", "174235"))
-# graph = link
-# graph.delete_all()
+class l2neo:
+    def __init__(self, syz, debug=False):
+        self.syz = syz
+        self.debug = debug
+
+    # 启动！
+    def go(self):
+        # 实体抽取+去重
+        self.list_ner = ner_extract(self.syz)
+        # 实体分类
+        self.list_type = ner_divide(self.list_ner)
+
+        if self.debug:
+            print("目前以debug模式运行ing，仅打印执行内容")
+            print(f"实体列表：{self.list_ner}")
+            print(f"实体类别：{self.list_type}")
+        else:
+            # 连接数据库并清空所有内容（要先启动数据库不然先注释掉）
+            link = Graph("http://localhost:7474", auth=("neo4j", "174235"))
+            self.graph = link
+            self.graph.delete_all()
+
+            # 绘制节点
+            self.plot_point()
+            # 绘制联系
+            self.plot_relation()
+
+            print("构建任务完成！")
+            
+
+    # 画点
+    def plot_point(self):
+        for i in range(len(self.list_ner)):
+            node = Node(self.list_type[i], name=self.list_ner[i])
+            # 绘制代码，debug时注释掉就行
+            self.graph.create(node)
+
+        print("节点绘制完成！")
+
+    # 联系
+    def plot_relation(self):
+        for item in self.syz:
+            subject = self.graph.nodes.match(name=item['subject']).first()
+            object = self.graph.nodes.match(name=item['object']).first()
+            rel = Relationship(subject, item['relation'], object)
+            self.graph.create(rel)
+        
+        print("联系绘制完成！")
 
 # 提取三元组实体 - 2个（sub+obj）
 def ner_extract(list_syz):
@@ -26,27 +70,18 @@ def ner_divide(list_ner):
     for text in list_ner:
         output = ltp.pipeline([text], tasks=["pos"])
         ner_type = output.pos[0]
-        print(f"{text}的实体类别：{ner_type}")
+        # print(f"{text}的实体类别：{ner_type}")
         all_ner_type.append(ner_type)
     return all_ner_type
 
-# 绘制节点的函数
-def plot_point(list_type, list_ner):
-    for i in range(len(list_ner)):
-        node = Node(list_type[i], name=list_ner[i])
-        # 绘制代码，debug时注释掉就行
-        # graph.create(node)
+if __name__ == '__main__':
+    list_syz = [
+        {'subject': 'Barack Obama', 'relation': 'was born in', 'object': 'Hawaii'},
+        {'subject': 'Richard Manning', 'relation': 'wrote', 'object': 'sentence'},
+        ]
+    a = l2neo(list_syz)
+    a.go()
 
-list_syz = [
-    {'subject': 'Barack Obama', 'relation': 'was born in', 'object': 'Hawaii'},
-    {'subject': 'Richard Manning', 'relation': 'wrote', 'object': 'sentence'},
-    ]
-
-a = ner_extract(list_syz)
-print(a)
-b = ner_divide(a)
-print(b)
-plot_point(b, a)
 
 
 
