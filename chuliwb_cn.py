@@ -16,15 +16,16 @@ if torch.cuda.is_available():
 # ltp.add_word("汤姆去", freq=2)
 # ltp.add_words(["外套", "外衣"], freq=2)
 sents = StnSplit().split(
-    "1889年4月20日，希特勒出生于当时奥匈帝国的因河畔布劳瑙"
+    "Hawaii"
     )
 print(sents)
 
 for text in sents:
     #  分词 cws、词性 pos、命名实体标注 ner、语义角色标注 srl、依存句法分析 dep、语义依存分析树 sdp、语义依存分析图 sdpg
-    output = ltp.pipeline([text], tasks=["cws", "ner", "sdpg"])
+    output = ltp.pipeline([text], tasks=["cws", "pos", "ner", "sdpg"])
 
     # 使用字典格式作为返回结果
     print(f"命名实体识别：{output.ner}")
     print(f"分词：{output.cws}")
+    print(f"词性：{output.pos}")
     print(f"语义依存分析图：{output.sdpg}")
