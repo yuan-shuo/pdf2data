@@ -22,6 +22,8 @@ class l2neo:
             # 连接数据库并清空所有内容（要先启动数据库不然先注释掉）
             link = Graph("http://localhost:7474", auth=("neo4j", "174235"))
             self.graph = link
+
+            # 删库！慎用
             self.graph.delete_all()
 
             # 绘制节点
