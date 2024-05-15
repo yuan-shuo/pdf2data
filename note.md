@@ -173,7 +173,7 @@ print 'Dependency Parsing:', nlp.dependency_parse(sentence)
 
 ### 对于LTP模型的说明
 
-#### 1. 分词对照表
+#### 1. 分词词性对照表
 
 1. `a`：形容词
 2. `b`：区别词

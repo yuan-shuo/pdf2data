@@ -1,4 +1,10 @@
-from svoUtils.triple_extraction import *
+# coding: utf-8
+
+try:
+    from svoUtils.triple_extraction import *
+except:
+    from triple_extraction import *
+
 
 class SvoCn:
     def __init__(self):
@@ -14,4 +20,5 @@ class SvoCn:
 
 if __name__=='__main__':
     a = SvoCn()
-    print(a.deal('李克强总理今天来我家了,我感到非常荣幸'))
+    # print(a.deal('李克强总理今天来我家了,我感到非常荣幸'))
+    print(a.deal('卷积神经网络可用于深度学习。'))

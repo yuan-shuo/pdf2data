@@ -1,6 +1,9 @@
 # coding: utf-8
 
-from svoUtils.sentence_parser import *
+try:
+    from svoUtils.sentence_parser import *
+except:
+    from sentence_parser import *
 import re
 
 class TripleExtractor:

@@ -18,5 +18,5 @@ class MainNeo:
         print("PDF Extraction finshed!")
 
 if __name__ == '__main__':
-    a=MainNeo(lan='en')
-    a.run("pdfSQL/topdfen.pdf")
+    a=MainNeo(lan='cn')
+    a.run("pdfSQL/pdfa1.pdf")

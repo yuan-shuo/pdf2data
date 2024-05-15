@@ -19,15 +19,19 @@ a = PdfE()
 # ltp.add_word("汤姆去", freq=2)
 # ltp.add_words(["隧道围岩分级", "yuan"], freq=2)
 sents = StnSplit().split(
-    a.deal("pdfSQL/pdfa1.pdf")
+    "李克强总理今天来我家了,我感到非常荣幸"
     )
 print(sents)
 
 for text in sents:
     #  分词 cws、词性 pos、命名实体标注 ner、语义角色标注 srl、依存句法分析 dep、语义依存分析树 sdp、语义依存分析图 sdpg
-    output = ltp.pipeline([text], tasks=["cws", "pos", "ner"])
+    output = ltp.pipeline([text], tasks=["cws", "pos", "ner", "srl", "dep", "sdp", "sdpg"])
 
     # 使用字典格式作为返回结果
     print(f"命名实体识别：{output.ner}")
     print(f"分词：{output.cws}")
     print(f"词性：{output.pos}")
+    print(f"语义角色标注：{output.srl}")
+    print(f"依存句法分析：{output.dep}")
+    print(f"语义依存分析树：{output.sdp}")
+    print(f"语义依存分析图：{output.sdpg}")

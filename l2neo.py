@@ -23,8 +23,14 @@ class l2neo:
             link = Graph("http://localhost:7474", auth=("neo4j", "174235"))
             self.graph = link
 
-            # 删库！慎用
-            self.graph.delete_all()
+            warn = input('(__!慎重!__)是否删除原有数据库?(y/n)：')
+
+            if warn == 'y':
+                # 删库！慎用
+                self.graph.delete_all()
+                print("已清空原有数据")
+            else:
+                print("将保留原有数据库")
 
             # 绘制节点
             self.plot_point()
